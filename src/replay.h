@@ -165,10 +165,13 @@ struct rr_state {
 #define RR_CRATES 12
     struct { int slot; uint16_t generation; void *component; } crates[RR_CRATES];  /* items.c: the crates and shields on the track */
     int crate_next;
+    struct { void *root, *seen, *piece[12]; uint32_t shown; int frames; } pad_view;     /* pad.c */
 };
 extern struct rr_state *rr_state GAME;
 #define rr (*rr_state)
 
+/* pad.c */
+void rr_show_pad(void *project, void *root);
 /* items.c */
 void rr_record_items(struct rr_frame *f);
 /* files.c */

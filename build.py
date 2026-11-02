@@ -14,14 +14,14 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 GAME_DIR = HERE.parent / 'CTRNF'
-VERSION = '0.2.0'
+VERSION = '0.2.1'
 EBOOT_BASE = 0x400000       # patch XML addresses are ELF addresses + 0x400000
 
 CODE = 0x2330000            # unused zero padding in the code segment, after Ghost Viewer's area (0x2324000-0x232dc00)
 CODE_END = 0x2338000        # and before Time Trial Beat-All (0x2338000)
 CODE2 = 0x231c000           # more zero padding, between Input Display (0x231a000) and Ghost Sharing (0x2320000):
 CODE2_END = 0x2320000       # the list and file code (SECOND_AREA)
-SECOND_AREA = ('menu.c',)
+SECOND_AREA = ('menu.c', 'pad.c')
 CODE3 = 0x2319300           # more zero padding, after tomtotom's drift gauge (ends 0x23192df) and before Input Display
 CODE3_END = 0x231a000       # (0x231a000): the file code (THIRD_AREA)
 THIRD_AREA = ('files.c',)
@@ -55,7 +55,7 @@ GAME = {
     'game_hud_set_lap': 0xe63f20, 'game_find_driver': 0xf9c610, 'g_vehicle_audio_meta': 0x2adc4e8, 'game_play_lowest': 0x28a6b0, 'game_play_at': 0x1023c90, 'game_item_give': 0xe366b0, 'game_item_use': 0xf0b070, 'game_racer_of': 0xfd4230, 'game_hud_bar': 0xe32050, 'game_hud_boost_update': 0xe437b0, 'game_hud_boost_stop': 0xe2d7a0, 'game_hud_style_next': 0xe31f80, 'game_speed_ratio': 0x1041ca0, 'game_forward_speed': 0x1041ce0, 'game_air_data': 0x1041d90, 'game_play_by_name': 0x1024340, 'g_sound_system': 0x2a23300, 'game_get_driver': 0xfd3940, 'game_horn_start': 0xd93300, 'game_horn_stop': 0xd92f00, 'g_hud_meta': 0x2ad4940,
     'game_item_factory': 0xe36a00, 'game_item_used_body': 0xf0b076, 'g_race_clock_meta': 0x2ad3ec8,
     'g_string_pool': 0x2af2600, 'g_world_ready': 0x2a92868, 'g_world_id': 0x2a92888, 'g_world_no_id': 0x2a922d0,
-    'g_entity_table': 0x2a92880, 'g_system_data': 0x2ad9c38, 'g_occlusion_triggers': 0x2acdb48, 'rr_state': STATE_POINTER,
+    'g_entity_table': 0x2a92880, 'g_system_data': 0x2ad9c38, 'g_occlusion_triggers': 0x2acdb48, 'rr_state': STATE_POINTER, 'id_state': 0x2beea70,
     'game_race_frame_body': 0xea2d96, 'game_level_exit_body': 0xf9b456,
 }
 # EU addresses of the USA ones that moved (eu_map.py); all others are the same. Import stubs: -0x20.
@@ -176,7 +176,7 @@ def run(*command):
 
 def build_code(tmp, game):
     objects = []
-    for source in ('rec.c', 'files.c', 'menu.c', 'play.c', 'items.c', 'mem.c', 'screen.c'):
+    for source in ('rec.c', 'files.c', 'menu.c', 'pad.c', 'play.c', 'items.c', 'mem.c', 'screen.c'):
         obj = tmp / (source + '.o')
         run('gcc', *CFLAGS, '-o', obj, HERE / 'src' / source)
         objects.append(obj)
@@ -285,7 +285,7 @@ def eu_package():
     manifest.update(id=manifest['id'] + '-eu', name=manifest['name'] + ' (EU)',
                     patches=['patches/ReplayMode-EU.xml'], files=[])
     (HERE / 'package-eu/mod.json').write_text(json.dumps(manifest, indent=2) + '\n')
-    for name in ('README.txt', 'octr-mod.required'):
+    for name in ('README.txt', 'octr-mod.required', 'gamebananapageurl.txt'):
         shutil.copy(HERE / 'package' / name, HERE / 'package-eu' / name)
 
 

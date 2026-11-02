@@ -1,4 +1,4 @@
-Replay Mode 0.2.0 BETA - by Onur
+Replay Mode 0.2.1 BETA - by Onur
 
 Beta: expect bugs, maybe crashes too. Back up your save first.
 Bug or low fps? https://github.com/Erluinzo/ctrnf-replay-mode/issues

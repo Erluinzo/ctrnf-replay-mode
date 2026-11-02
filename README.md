@@ -27,7 +27,7 @@ The replay is a Single Race on the recorded track: the HUD is the watched racer'
 
 Files: OCTR folder > `mod-state/user/savedata/1/CUSA13795` (EU: `CUSA14876`) > `RaceReplay`; exports in `RaceReplay/export`. To watch a replay from someone else, they send you a file from their `RaceReplay/export` folder (made with Triangle); put it in `RaceReplay` while the game is closed. Files show there after the game is closed normally.
 
-Works with [Input Display](https://github.com/Erluinzo/ctrnf-input-display) (the watched racer's inputs), [Reserves Meter](https://github.com/Erluinzo/ctrnf-reserves-meter) 1.1.1 or newer (its reserves) and [Ghost Viewer](https://github.com/Erluinzo/ctrnf-time-trial-replay).
+Every replay shows the watched racer's inputs. Works with [Input Display](https://github.com/Erluinzo/ctrnf-input-display) (then that mod shows them), [Reserves Meter](https://github.com/Erluinzo/ctrnf-reserves-meter) 1.1.1 or newer (its reserves) and [Ghost Viewer](https://github.com/Erluinzo/ctrnf-time-trial-replay).
 
 ## Install
 Download the ZIP for your game from [Releases](https://github.com/Erluinzo/ctrnf-replay-mode/releases):

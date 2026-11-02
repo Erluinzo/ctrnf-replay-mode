@@ -978,7 +978,7 @@ static void *content(void *placeable)
     return a && AT(a, 0, const void *) == g_composition_vtable ? AT(a, 0x20, void *) : 0;
 }
 
-static void *find(void *placeable, const char *name, int depth)
+void *find(void *placeable, const char *name, int depth)
 {
     if (!placeable || depth > 24) return 0;
     if (same_text(AT(placeable, 0x28, const char *), name)) return placeable;
@@ -1084,7 +1084,7 @@ static const float HELP_BOX_FIX[HELP_LINES] = {0, 0, -37, 0, 0, 0};     /* the b
 #define HELP_SCALE 0.62f
 #define HELP_BOX 0.11f
 
-MORE static void *find_asset(void *placeable, const char *name, int depth)
+MORE void *find_asset(void *placeable, const char *name, int depth)
 {
     if (!placeable || depth > 24) return 0;
     void *a = asset_of(placeable);
@@ -1147,7 +1147,7 @@ MORE static void place_legend(float top)
     }
 }
 
-static void show_text(void *piece, const char *text)
+MORE static void show_text(void *piece, const char *text)
 {
     if (!piece) return;
     game_set_hidden(AT(piece, 0x40, void *), 0);
@@ -1272,6 +1272,7 @@ static void hud(void)
         *at = 0;
         game_set_text(P.line_copy[i], text);
     }
+    rr_show_pad(project, root);
 }
 
 /* The watched racer's inputs for the Input Display: ghost bits 8 accelerate (Cross), 9 reverse (down),
@@ -2432,8 +2433,8 @@ void rr_play_frame(void)
     /* the timer stops at the watched racer's finish, as a player's does */
     float finish = P.header.racer[P.watch].finish_time;
     set_race_clock((frame_now()->racer[P.watch].flags & RS_FINISHED) && finish > 0.0f && finish < P.time ? finish : P.time);
-    hud();
     publish_pad();
+    hud();
     engine_sound();
     horns();
     events();
