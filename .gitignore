@@ -1,0 +1,4 @@
+dist/
+dev/
+__pycache__/
+octr-mod.required
