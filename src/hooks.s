@@ -117,7 +117,8 @@ hook_crate:
     jmp game_crate_body
 1:  ret
 
-# Replaces the same 6 bytes at 0xe330e0: a kart takes damage (rdi = its damage component, esi = the type).
+# Replaces "mov rax, [stack guard]" at 0xe330f1: a kart takes damage (rdi = its damage component, esi = the type).
+# After the function's first 17 bytes, as the port (v0.8 online mode) checks and wraps those.
 # In a replay only the recorded hits are taken (rr_take_damage 0: returns 0, "no damage").
     .globl hook_take_damage
 hook_take_damage:
@@ -126,11 +127,16 @@ hook_take_damage:
     test eax, eax
     RESTORE
     jz 1f
-    push rbp
-    mov rbp, rsp
-    push r15
+    mov rax, qword ptr [rip + g_stack_guard]
     jmp game_take_damage_body
-1:  xor eax, eax
+1:  add rsp, 0x48
+    pop rbx
+    pop r12
+    pop r13
+    pop r14
+    pop r15
+    pop rbp
+    xor eax, eax
     ret
 
 # Replaces the same 6 bytes at 0xe35190: an item's end when its kart respawns or finishes. A rewind clears the items and the
@@ -248,7 +254,8 @@ hook_restart:
 hook_play_sound:
     jmp rr_play_sound
 
-# Replaces "push rbp; mov rbp, rsp; push r14" at 0xdcb630, an AI kart's input delegate (rdi = its CKartAIComponent).
+# Replaces "test rax, rax; je 0xdcb64c" at 0xdcb641, an AI kart's input delegate (rdi = its CKartAIComponent).
+# After the function's first 17 bytes, as the port (v0.8 race options) checks and wraps those.
 # In a replay the AI does not drive (rr_ai_input 0: its input is cleared, the game's code is skipped).
     .globl hook_ai_input
 hook_ai_input:
@@ -257,11 +264,14 @@ hook_ai_input:
     test eax, eax
     RESTORE
     jz 1f
-    push rbp
-    mov rbp, rsp
-    push r14
+    test rax, rax
+    jz 2f
     jmp game_ai_input_body
-1:  ret
+2:  jmp game_ai_input_no_entity
+1:  pop rbx
+    pop r14
+    pop rbp
+    ret
 
 # After the kart code's 4 lookups of its HUD for the powerslide meter (slide start, end, boost, failed boost: the
 # calls themselves are Ghost Viewer's hooks): in a replay the player's kart, driven by the recording, does not

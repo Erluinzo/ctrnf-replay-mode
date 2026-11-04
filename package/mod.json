@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "id": "replay-mode",
   "name": "Replay Mode Beta",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "author": "Onur",
   "description": "Records every race (also online) and plays it back as a real race: REPLAYS on the main menu.",
   "requiresCapabilities": [
@@ -19,8 +19,8 @@
   "files": [
     {
       "file": "README.txt",
-      "sha256": "913f9a0526b2f6551d6af8256b0257e506ea82dbc7a884c687e81ab4f0e06851",
-      "bytes": 2091
+      "sha256": "4746ed374f58fcf3652bc2f8875a76b08ac0bb7dd055f92f7e9334da5037cb2b",
+      "bytes": 2041
     },
     {
       "file": "gamebananapageurl.txt",
@@ -34,8 +34,8 @@
     },
     {
       "file": "patches/ReplayMode.xml",
-      "sha256": "dec382b68d68ed14410837efdc3b813c8373cf13bff18fa3e296e7aa88db5e8d",
-      "bytes": 148662
+      "sha256": "6f7192b221f94d8e02ab530fbe568e3ad34ef30bf7d9b8908aa166c651eb65b2",
+      "bytes": 148726
     }
   ]
 }

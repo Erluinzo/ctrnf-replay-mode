@@ -7,14 +7,14 @@ switched-on test copy of each XML in the game's patches folder:
 
 Each edition's executable is only read: to check the original bytes at every write and to compute the
 ExpectedSHA256 values the launcher checks before it applies the patch. The EU addresses were found with
-../CTRNF-Mods/tools/eu_map.py.
+../CTRNF-Tools/tools/eu_map.py.
 """
 import hashlib, json, re, shutil, subprocess, sys, tempfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 GAME_DIR = HERE.parent / 'CTRNF'
-VERSION = '0.2.1'
+VERSION = '0.2.2'
 EBOOT_BASE = 0x400000       # patch XML addresses are ELF addresses + 0x400000
 
 CODE = 0x2330000            # unused zero padding in the code segment, after Ghost Viewer's area (0x2324000-0x232dc00)
@@ -43,11 +43,11 @@ GAME = {
     'g_boost_meta': 0x2ac4018, 'g_power_up_meta': 0x2addd90, 'g_horn_meta': 0x2add660,
     'g_damage_meta': 0x2ac5018, 'g_respawn_meta': 0x2ac5948, 'game_maintained': 0xe2f050, 'game_current_zone': 0x102e040, 'game_zone_by_name': 0x102e320, 'g_zone_system': 0x2ae3c18, 'g_race_settings': 0x2ad4e30,
     'sce_time_of_day': 0x1bea298, 'sce_system_param': 0x1be8da8, 'game_level_start_body': 0xf9b256, 'game_pad_read': 0x3d4dd0, 'game_restart_body': 0x1046885, 'game_countdown_body': 0xf38b96,
-    'game_legend_add': 0xa09d30, 'game_open_dialog': 0x9c3890, 'game_handle_free': 0x149f280, 'game_play_common': 0xae2fc0, 'game_despawn_items': 0x1056bb0, 'g_spawned_meta': 0x2ad70d8, 'game_boost_create': 0xe2e6b0, 'g_ui_audio': 0x2abb750, 'game_set_text': 0x268ef0, 'game_set_sprite_material': 0x265f80, 'game_stream_manager': 0x22d0e0, 'game_find_directory': 0x14fad90, 'game_create': 0x14a0e30, 'g_level_data_meta': 0x2ae78f8, 'g_level_group_meta': 0x2ae7928, 'g_level_groups_meta': 0x2ae7938, 'g_project_vtable': 0x2432288, 'g_level_item_vtable': 0x275d9c8, 'game_open_project': 0xa063d0, 'game_set_next_race_mode': 0xfdeb70, 'game_set_next_map': 0x1045e90, 'game_load_next_map': 0x1046580, 'game_apply_choice': 0xc1d8e0, 'game_apply_player_count': 0xc2e400, 'game_player_at': 0xc02600, 'game_enter_customization': 0xe1e7a0, 'game_open_project_continue': 0xa063d6,    'game_trophy_continue': 0xfcdce6, 'game_challenge_continue': 0xaa2226, 'game_effect_owner_continue': 0xb95cf6, 'game_slide_start_continue': 0xe32830, 'game_slide_start_none': 0xe32841, 'game_slide_end_continue': 0xe2d5d6, 'game_slide_boost_continue': 0xe2fe86, 'game_slide_fail_continue': 0xe32bb8, 'game_respawn': 0xe7dd00, 'game_wrong_way_check': 0xe48c20, 'game_wrong_way_show': 0xe49210, 'game_player_input': 0xbc3830, 'game_ai_input_body': 0xdcb636, 'game_nav_lose_focus': 0x125c660, 'game_nav_gain_focus': 0x125c4d0,
+    'game_legend_add': 0xa09d30, 'game_open_dialog': 0x9c3890, 'game_handle_free': 0x149f280, 'game_play_common': 0xae2fc0, 'game_despawn_items': 0x1056bb0, 'g_spawned_meta': 0x2ad70d8, 'game_boost_create': 0xe2e6b0, 'g_ui_audio': 0x2abb750, 'game_set_text': 0x268ef0, 'game_set_sprite_material': 0x265f80, 'game_stream_manager': 0x22d0e0, 'game_find_directory': 0x14fad90, 'game_create': 0x14a0e30, 'g_level_data_meta': 0x2ae78f8, 'g_level_group_meta': 0x2ae7928, 'g_level_groups_meta': 0x2ae7938, 'g_project_vtable': 0x2432288, 'g_level_item_vtable': 0x275d9c8, 'game_open_project': 0xa063d0, 'game_set_next_race_mode': 0xfdeb70, 'game_set_next_map': 0x1045e90, 'game_load_next_map': 0x1046580, 'game_apply_choice': 0xc1d8e0, 'game_apply_player_count': 0xc2e400, 'game_player_at': 0xc02600, 'game_enter_customization': 0xe1e7a0, 'game_open_project_continue': 0xa063d6,    'game_trophy_continue': 0xfcdce6, 'game_challenge_continue': 0xaa2226, 'game_effect_owner_continue': 0xb95cf6, 'game_slide_start_continue': 0xe32830, 'game_slide_start_none': 0xe32841, 'game_slide_end_continue': 0xe2d5d6, 'game_slide_boost_continue': 0xe2fe86, 'game_slide_fail_continue': 0xe32bb8, 'game_respawn': 0xe7dd00, 'game_wrong_way_check': 0xe48c20, 'game_wrong_way_show': 0xe49210, 'game_player_input': 0xbc3830, 'game_ai_input_body': 0xdcb646, 'game_ai_input_no_entity': 0xdcb64c, 'game_nav_lose_focus': 0x125c660, 'game_nav_gain_focus': 0x125c4d0,
     'g_gui_manager': 0x2ac0dc0, 'g_input_manager': 0x2ac2e90, 'g_players': 0x2ad1160, 'g_composition_vtable': 0x2431b18,
     
     'game_ghost_new': 0x10e1050, 'game_move_key_new': 0x10e0cb0, 'game_input_key_new': 0x10e0d80,
-    'game_list_reserve': 0x14a4ed0, 'game_list_set_count': 0x14a6f20, 'game_spawn_ghost': 0xf9bee0, 'game_ghost_reset': 0xfce410, 'game_ghost_attach': 0xfce080, 'game_ghost_update': 0xfce570, 'game_ai_load': 0xffd780, 'game_ai_count': 0xff9580, 'game_decal_find': 0xa0b5a0, 'game_shuffle_start': 0xe363e0, 'game_shuffle_end': 0xe37b50, 'game_take_damage': 0xe330e0, 'game_drift_button': 0xe32590, 'game_crate_attach': 0xe40d60, 'game_set_color': 0x269460, 'game_position_row': 0x9de1b0, 'game_anim_args': 0x9990b0, 'game_anim_args_end': 0x27ae10, 'game_anim_play': 0x250b20, 'g_race_system_meta': 0x2ae34c8, 'game_set_rotation': 0x2690b0, 'game_event_racer_finished': 0x1198ca0, 'game_event_wumpa': 0x1198030, 'game_end_timer_start': 0xe5dfe0, 'game_crate_body': 0xe36236, 'game_take_damage_body': 0xe330e6, 'game_item_cancel_body': 0xe35196, 'game_item_respawn_body': 0xe35996, 'game_item_finish_body': 0xe359b6, 'game_item_update_body': 0xe38b06, 'game_item_crate_body': 0xe359e6, 'game_item_wumpa_body': 0xe35b86, 'game_hud_lap_body': 0xe63f26, 'game_has_player': 0xc02470, 'game_event_show': 0x117ee70, 'game_event_hide': 0x117ef90, 'game_event_item': 0x117f1d0, 'game_event_charges': 0x117f530, 'game_event_reset': 0x117f410, 'game_event_slide_end': 0x10fd380, 'game_faction': 0xfe5790, 'g_player_entities': 0x2ad0730,
+    'game_list_reserve': 0x14a4ed0, 'game_list_set_count': 0x14a6f20, 'game_spawn_ghost': 0xf9bee0, 'game_ghost_reset': 0xfce410, 'game_ghost_attach': 0xfce080, 'game_ghost_update': 0xfce570, 'game_ai_load': 0xffd780, 'game_ai_count': 0xff9580, 'game_decal_find': 0xa0b5a0, 'game_shuffle_start': 0xe363e0, 'game_shuffle_end': 0xe37b50, 'game_take_damage': 0xe330e0, 'game_drift_button': 0xe32590, 'game_crate_attach': 0xe40d60, 'game_set_color': 0x269460, 'game_position_row': 0x9de1b0, 'game_anim_args': 0x9990b0, 'game_anim_args_end': 0x27ae10, 'game_anim_play': 0x250b20, 'g_race_system_meta': 0x2ae34c8, 'game_set_rotation': 0x2690b0, 'game_event_racer_finished': 0x1198ca0, 'game_event_wumpa': 0x1198030, 'game_end_timer_start': 0xe5dfe0, 'game_crate_body': 0xe36236, 'game_take_damage_body': 0xe330f8, 'g_stack_guard': 0x2807098, 'game_item_cancel_body': 0xe35196, 'game_item_respawn_body': 0xe35996, 'game_item_finish_body': 0xe359b6, 'game_item_update_body': 0xe38b06, 'game_item_crate_body': 0xe359e6, 'game_item_wumpa_body': 0xe35b86, 'game_hud_lap_body': 0xe63f26, 'game_has_player': 0xc02470, 'game_event_show': 0x117ee70, 'game_event_hide': 0x117ef90, 'game_event_item': 0x117f1d0, 'game_event_charges': 0x117f530, 'game_event_reset': 0x117f410, 'game_event_slide_end': 0x10fd380, 'game_faction': 0xfe5790, 'g_player_entities': 0x2ad0730,
     'game_camera_instance': 0xc4b110, 'game_active_camera': 0xc4b230, 'game_camera_refresh': 0xc8ade0, 'game_make_handle': 0x14bea20,
     'game_lock_request': 0xc08100, 'game_ghost_look_end_new': 0x112da10, 'game_send_message': 0xd32160,
     'game_player_kart': 0xe50f70, 'g_ghost_manager': 0x2abc3d0, 'g_kart_camera_meta': 0x2ac42e8, 'game_spawn_placeable': 0x253c00, 'game_set_position': 0x268f90,
@@ -114,7 +114,7 @@ HOOKS = [
     (0xe9b7ec, 'e88f1f1600', 'e8', 'rr_ai_load', 0),            # the AI racers become the recorded ones
     (0xffb24e, 'e82de3ffff', 'e8', 'rr_ai_count', 0),           # the AI picker: as many AI as recorded racers
     (0xe36230, '554889e54157', 'e9', 'hook_crate', 1),          # a kart drives through an item crate
-    (0xe330e0, '554889e54157', 'e9', 'hook_take_damage', 1),    # a kart takes damage
+    (0xe330f1, '488b05a03f9d01', 'e9', 'hook_take_damage', 2),  # a kart takes damage (after the start the port wraps)
     (0xe35190, '554889e54157', 'e9', 'hook_item_cancel', 1),    # an item ends with its kart's respawn or finish
     (0xe35990, '8b87d0000000', 'e9', 'hook_item_respawn', 1),   # what an item does on its kart's respawn, finish, crates
     (0xe359b0, '8b87d0000000', 'e9', 'hook_item_finish', 1),
@@ -122,7 +122,7 @@ HOOKS = [
     (0xe359e0, '554889e54157', 'e9', 'hook_item_crate', 1),
     (0xe35b80, '554889e54157', 'e9', 'hook_item_wumpa', 1),
     (0xe368a0, '554889e54156', 'e9', 'rr_power_up_event', 1),   # a kart's item events go to its HUD
-    (0xdcb630, '554889e54156', 'e9', 'hook_ai_input', 1),       # an AI kart's input: none in a replay
+    (0xdcb641, '4885c07406', 'e9', 'hook_ai_input', 0),         # an AI kart's input: none in a replay (after the start the port wraps)
     (0xbc30aa, 'e881070000', 'e8', 'rr_player_input', 0),       # the pad's input to the player's kart
     (0xe2f9cc, 'e8bf2b0000', 'e8', 'rr_drift_button', 0),        # may a kart's slide start now?
     (0xe63f20, '554889e54157', 'e9', 'hook_hud_lap', 1),        # the HUD's lap is set

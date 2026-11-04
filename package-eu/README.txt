@@ -1,4 +1,4 @@
-Replay Mode 0.2.1 BETA - by Onur
+Replay Mode 0.2.2 BETA - by Onur
 
 Beta: expect bugs, maybe crashes too. Back up your save first.
 Bug or low fps? https://github.com/Erluinzo/ctrnf-replay-mode/issues
@@ -33,11 +33,10 @@ replay state. Online, other players' items appear when they used them
 clock). A TNT on a racer's head and a shield's end are recorded too. A replay of an online race passes through the wait before GO in about a
 second, so track hazards are where they were.
 
-Files: OCTR folder > mod-state > user > savedata > 1 > CUSA13795 (EU:
-CUSA14876) > RaceReplay. Exports are in RaceReplay > export. To watch a
-replay from someone else: they send you a file from their RaceReplay >
-export folder (Triangle); put it in RaceReplay (game closed).
-Files appear there after the game is closed normally.
+Files: OCTR folder > user > savedata > 1 > CUSA13795 (EU: CUSA14876) >
+RaceReplay. Exports are in RaceReplay > export. To watch a replay from
+someone else: they send you a file from their RaceReplay > export folder
+(Triangle); put it in RaceReplay (game closed).
 
-Game: CTR Nitro-Fueled 1.21 on the OCTR launcher. This ZIP is for USA
+Game: CTR Nitro-Fueled 1.21 on the OCTR launcher (v0.8 or newer). This ZIP is for USA
 (CUSA13795); the -eu ZIP is for EU (CUSA14876).

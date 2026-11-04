@@ -1,5 +1,5 @@
 /* Replay files, in a save data folder of the mod's own (saves are the only files the port keeps after
- * a game with mod packages; it copies them back when the game is closed normally).
+ * a game with mod packages; OCTR v0.8 and newer write them to the player's own user folder at once).
  * Names: A00012.crr auto-saved (only the last RR_KEEP_AUTO are kept), K00012.crr kept for ever; any
  * other *.crr (a replay from someone else, copied in by hand) is listed too. Exports go to export/.
  * Frames are packed: each frame is XORed with the one before, then runs of zero bytes are short. */
